@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title">Amit Bharti Flex & Printing</title>
+    <meta
+      name="description"
+      content="Custom flex, vinyl, signage, cards, gifts, shirts and more in Jalaun."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="lang-modal" id="languageModal" aria-modal="true" role="dialog">
+      <div class="lang-modal-box">
+        <p class="eyebrow modal-eyebrow" data-i18n="langPromptEyebrow">WELCOME</p>
+        <h2 data-i18n="langTitle">Choose your language</h2>
+        <p class="lang-subtitle" data-i18n="langSubtitle">Select your preferred language to continue.</p>
+
+        <div class="language-grid">
+          <button class="lang-option active" data-lang="en">English</button>
+          <button class="lang-option" data-lang="hi">हिन्दी</button>
+          <button class="lang-option" data-lang="bn">বাংলা</button>
+          <button class="lang-option" data-lang="mr">मराठी</button>
+          <button class="lang-option" data-lang="ta">தமிழ்</button>
+          <button class="lang-option" data-lang="te">తెలుగు</button>
+          <button class="lang-option" data-lang="gu">ગુજરાતી</button>
+          <button class="lang-option" data-lang="kn">ಕನ್ನಡ</button>
+          <button class="lang-option" data-lang="pa">ਪੰਜਾਬੀ</button>
+          <button class="lang-option" data-lang="ml">മലയാളം</button>
+        </div>
+
+        <button class="button full-width" id="continueBtn" data-i18n="continueBtn">Continue</button>
+      </div>
+    </div>
+
+    <div class="auth-modal hidden" id="authModal" aria-modal="true" role="dialog">
+      <div class="auth-modal-box">
+        <button class="close-btn" type="button" data-close-auth="true" aria-label="Close login">×</button>
+        <p class="eyebrow">ACCOUNT</p>
+        <h2 id="authTitle">Login to your account</h2>
+
+        <form id="authForm" class="auth-form">
+          <input type="email" id="authEmail" placeholder="Email address" required />
+          <input type="password" id="authPassword" placeholder="Password" required />
+          <button type="submit" class="button full-width">Continue</button>
+        </form>
+
+        <div class="auth-switch-row">
+          <span>Need an account?</span>
+          <button type="button" class="text-btn" id="switchAuthMode">Create account</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="topline"><span data-i18n="toplineMain">YOUR IDEAS. BEAUTIFULLY PRINTED.</span> <span data-i18n="toplineLocation">Station Road · Jalaun, U.P.</span></div>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#home" aria-label="Amit Bharti home">
+          <div class="brand-mark">ab</div>
+          <div class="brand-text">
+            <strong>AMIT BHARTI</strong>
+            <span data-i18n="brandTag">FLEX & PRINTING</span>
+          </div>
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="products.html" data-i18n="navShop">Shop all prints</a>
+          <a href="#templates" data-i18n="navTemplates">Templates</a>
+          <a href="#services" data-i18n="navServices">Our services</a>
+          <a href="#visit" data-i18n="navVisit">Visit our shop</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="nav-link lang-switch" id="langToggle" type="button" data-i18n="changeLanguage">Language</button>
+          <button class="nav-link text-btn" type="button" data-open-auth="login">Login</button>
+          <a class="nav-link text-btn" href="cart.html">Cart</a>
+          <button class="button small" type="button" data-open-auth="signup">Create account</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="home">
+      <section class="hero container">
+        <div class="hero-copy">
+          <p class="eyebrow" data-i18n="heroEyebrow">A LITTLE INK. A BIG IMPRESSION.</p>
+          <h1>
+            <span data-i18n="heroLine1">Think it.</span><br />
+            <span data-i18n="heroLine2">Print it.</span><br />
+            <span data-i18n="heroLine3">Make it yours.</span>
+          </h1>
+          <p class="lead" data-i18n="heroLead">
+            From a visiting card to a whole shopfront. Custom printing for every idea,
+            occasion and business.
+          </p>
+
+          <div class="hero-actions">
+            <a href="products.html" class="button" data-i18n="heroPrimaryBtn">Find your print</a>
+            <a href="#quote" class="button secondary" data-i18n="heroSecondaryBtn">Request a quote</a>
+            <button class="button secondary" type="button" data-open-auth="signup">Create account</button>
+          </div>
+
+          <div class="hero-notes">
+            <span>Custom sizes</span>
+            <span>Your artwork</span>
+            <span>Shop pickup</span>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Printing samples collage">
+          <div class="print-card print-card-large">
+            <div class="mini-tag">BANNER</div>
+            <h3>Shopfront media</h3>
+          </div>
+          <div class="print-card print-card-small alt">
+            <div class="mini-tag">VINYL</div>
+            <h3>Stickers & labels</h3>
+          </div>
+          <div class="print-card print-card-small">
+            <div class="mini-tag">VISITING CARD</div>
+            <h3>Business essentials</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-strip">
+        <div class="container stats-grid">
+          <div><strong>10k+</strong><span>Orders printed</span></div>
+          <div><strong>48 hrs</strong><span>Fast turnaround</span></div>
+          <div><strong>120+</strong><span>Custom templates</span></div>
+          <div><strong>4.9/5</strong><span>Customer rating</span></div>
+        </div>
+      </section>
+
+      <section id="products" class="product-section" data-section="shop">
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow" data-i18n="productsEyebrow">OUR POPULAR PRINTS</p>
+              <h2 data-i18n="productsTitle">Everything you need to stand out.</h2>
+            </div>
+            <div class="filter-bar">
+              <button class="filter-btn active" data-filter="all">All prints</button>
+              <button class="filter-btn" data-filter="signage">Signage</button>
+              <button class="filter-btn" data-filter="fashion">Fashion</button>
+              <button class="filter-btn" data-filter="gift">Gifts</button>
+              <button class="filter-btn" data-filter="office">Office</button>
+            </div>
+          </div>
+
+          <div class="product-grid">
+            <article class="product-card" data-category="signage">
+              <div class="product-icon">📢</div>
+              <h3>Flex Banner</h3>
+              <p>Outdoor flex banners for shops, events, and promotions.</p>
+              <div class="meta-row">
+                <span>From ₹599</span>
+                <button class="small-link" type="button" data-product="Flex Banner">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="fashion">
+              <div class="product-icon">👕</div>
+              <h3>T-shirt Printing</h3>
+              <p>Custom shirts for teams, events, schools and brand merch.</p>
+              <div class="meta-row">
+                <span>From ₹299</span>
+                <button class="small-link" type="button" data-product="T-shirt Printing">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="gift">
+              <div class="product-icon">🫖</div>
+              <h3>Mug Printing</h3>
+              <p>Personalized mugs for gifting, promotions and workplace use.</p>
+              <div class="meta-row">
+                <span>From ₹249</span>
+                <button class="small-link" type="button" data-product="Mug Printing">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="office">
+              <div class="product-icon">🖊️</div>
+              <h3>Pen Printing</h3>
+              <p>Premium branded pens for gifting, offers and corporate events.</p>
+              <div class="meta-row">
+                <span>From ₹90</span>
+                <button class="small-link" type="button" data-product="Pen Printing">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="gift">
+              <div class="product-icon">🗝️</div>
+              <h3>Keychain Printing</h3>
+              <p>Custom branded keychains for shops, events and giveaways.</p>
+              <div class="meta-row">
+                <span>From ₹120</span>
+                <button class="small-link" type="button" data-product="Keychain Printing">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="office">
+              <div class="product-icon">🏷️</div>
+              <h3>Name Plate Printing</h3>
+              <p>Elegant plates for offices, homes, reception desks and shops.</p>
+              <div class="meta-row">
+                <span>From ₹399</span>
+                <button class="small-link" type="button" data-product="Name Plate Printing">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="signage">
+              <div class="product-icon">📦</div>
+              <h3>Packaging Printing</h3>
+              <p>Custom cartons, labels and wraps for product presentation.</p>
+              <div class="meta-row">
+                <span>From ₹799</span>
+                <button class="small-link" type="button" data-product="Packaging Printing">Ask for quote</button>
+              </div>
+            </article>
+
+            <article class="product-card" data-category="gift">
+              <div class="product-icon">🎁</div>
+              <h3>Gift Box Printing</h3>
+              <p>Personalized gift packaging for birthdays, weddings and events.</p>
+              <div class="meta-row">
+                <span>From ₹349</span>
+                <button class="small-link" type="button" data-product="Gift Box Printing">Ask for quote</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="templates" class="templates-section">
+        <div class="container">
+          <div class="section-heading compact">
+            <div>
+              <p class="eyebrow">PRINT TEMPLATES</p>
+              <h2>Start from a ready-made design.</h2>
+            </div>
+            <button class="button secondary" type="button" data-open-auth="signup">Save my template</button>
+          </div>
+
+          <div class="template-grid">
+            <article class="template-card" data-template="Corporate Kit">
+              <div class="template-preview preview-one"></div>
+              <h3>Corporate Kit</h3>
+              <p>Business cards, pens and stationery set.</p>
+              <button class="small-link" type="button" data-template-btn="Corporate Kit">Use template</button>
+            </article>
+
+            <article class="template-card" data-template="Wedding Invite">
+              <div class="template-preview preview-two"></div>
+              <h3>Wedding Invite</h3>
+              <p>Elegant card design for invitations and keepsakes.</p>
+              <button class="small-link" type="button" data-template-btn="Wedding Invite">Use template</button>
+            </article>
+
+            <article class="template-card" data-template="Festive Retail">
+              <div class="template-preview preview-three"></div>
+              <h3>Festive Retail</h3>
+              <p>Gift packaging and signage for seasonal promotions.</p>
+              <button class="small-link" type="button" data-template-btn="Festive Retail">Use template</button>
+            </article>
+
+            <article class="template-card" data-template="Food Brand">
+              <div class="template-preview preview-four"></div>
+              <h3>Food Brand</h3>
+              <p>Custom labels and menu cards for cafes and food brands.</p>
+              <button class="small-link" type="button" data-template-btn="Food Brand">Use template</button>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="services-section">
+        <div class="container">
+          <p class="eyebrow" data-i18n="servicesEyebrow">HOW WE WORK</p>
+          <h2 data-i18n="servicesTitle">Fast, local and made around your needs.</h2>
+
+          <div class="services-grid">
+            <div class="service-card">
+              <div class="service-icon">🖨️</div>
+              <h3>Custom printing</h3>
+              <p>Large, medium or small runs based on your business, event or product.</p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">📁</div>
+              <h3>Artwork help</h3>
+              <p>We check your files and requirements before production begins.</p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">📍</div>
+              <h3>Pickup support</h3>
+              <p>Collect from our shop once the order is ready for dispatch or pickup.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="why-us-section">
+        <div class="container why-grid">
+          <div>
+            <p class="eyebrow">WHY PEOPLE CHOOSE US</p>
+            <h2>Designs that feel premium and print that feels personal.</h2>
+          </div>
+          <ul>
+            <li>Custom sizes and material options</li>
+            <li>Artwork support before production</li>
+            <li>Fast local delivery and pickup</li>
+            <li>Bulk orders for businesses and events</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="quote" class="quote-section">
+        <div class="container quote-box">
+          <div>
+            <p class="eyebrow">NEED A CUSTOM QUOTE?</p>
+            <h2>Send us your requirements and we’ll get back to you.</h2>
+          </div>
+
+          <form id="quoteForm" class="quote-form">
+            <input type="text" name="name" placeholder="Your name" required />
+            <input type="tel" name="phone" placeholder="Phone number" required />
+            <select id="productSelect" name="product" required>
+              <option value="">Select product</option>
+              <option value="Flex Banner">Flex Banner</option>
+              <option value="T-shirt Printing">T-shirt Printing</option>
+              <option value="Mug Printing">Mug Printing</option>
+              <option value="Pen Printing">Pen Printing</option>
+              <option value="Keychain Printing">Keychain Printing</option>
+              <option value="Name Plate Printing">Name Plate Printing</option>
+              <option value="Packaging Printing">Packaging Printing</option>
+              <option value="Gift Box Printing">Gift Box Printing</option>
+            </select>
+            <select id="templateSelect" name="template">
+              <option value="">No template selected</option>
+              <option value="Corporate Kit">Corporate Kit</option>
+              <option value="Wedding Invite">Wedding Invite</option>
+              <option value="Festive Retail">Festive Retail</option>
+              <option value="Food Brand">Food Brand</option>
+            </select>
+            <input type="number" min="1" name="quantity" placeholder="Quantity" value="1" required />
+            <textarea name="message" rows="4" placeholder="Tell us what you need to print"></textarea>
+            <button type="submit" class="button">Send enquiry</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer id="visit" class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <a class="brand footer-brand" href="#home">
+            <div class="brand-mark">ab</div>
+            <div class="brand-text">
+              <strong>AMIT BHARTI</strong>
+              <span>FLEX & PRINTING</span>
+            </div>
+          </a>
+          <p>Custom print. Local expertise.</p>
+        </div>
+
+        <div>
+          <h4>Come say hello.</h4>
+          <p>Station Road, Jalaun, Uttar Pradesh</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Station+Road+Jalaun+Uttar+Pradesh" target="_blank" rel="noreferrer">Find us on the map</a>
+        </div>
+
+        <div>
+          <h4>Get in touch</h4>
+          <p>For orders, quotes, and printing support.</p>
+          <a href="tel:+919999999999">+91 99999 99999</a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="floating-cart">
+      <a href="cart.html" class="floating-cart-link">
+        <span>Cart</span>
+        <strong data-cart-count>0</strong>
+      </a>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

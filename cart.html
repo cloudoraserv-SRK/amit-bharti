@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart | Amit Bharti Flex & Printing</title>
+    <meta name="description" content="Review your selected custom print items and send your order on WhatsApp." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="topline"><span>YOUR IDEAS. BEAUTIFULLY PRINTED.</span> <span>Station Road · Jalaun, U.P.</span></div>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="Amit Bharti home">
+          <div class="brand-mark">ab</div>
+          <div class="brand-text">
+            <strong>AMIT BHARTI</strong>
+            <span>FLEX & PRINTING</span>
+          </div>
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="products.html">Shop all prints</a>
+          <a href="index.html#templates">Templates</a>
+          <a href="index.html#services">Our services</a>
+          <a href="index.html#visit">Visit our shop</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="nav-link lang-switch" id="langToggle" type="button">Language</button>
+          <a class="button small" href="products.html">Continue shopping</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <div class="container">
+        <div class="page-heading">
+          <p class="eyebrow">YOUR CART</p>
+          <h1>Review your print order.</h1>
+        </div>
+
+        <div class="cart-layout" data-cart-page>
+          <div class="cart-items" data-cart-items></div>
+
+          <aside class="cart-summary">
+            <h3>Order summary</h3>
+            <div class="summary-row"><span>Subtotal</span><span data-summary-subtotal>₹0</span></div>
+            <div class="summary-row"><span>Shipping</span><span>₹0</span></div>
+            <div class="summary-row"><strong>Total</strong><strong data-summary-total>₹0</strong></div>
+            <button class="button full-width" type="button" data-whatsapp-order>Order on WhatsApp</button>
+            <a class="button secondary full-width" href="products.html">Add more items</a>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <a class="brand footer-brand" href="index.html">
+            <div class="brand-mark">ab</div>
+            <div class="brand-text">
+              <strong>AMIT BHARTI</strong>
+              <span>FLEX & PRINTING</span>
+            </div>
+          </a>
+          <p>Custom print. Local expertise.</p>
+        </div>
+
+        <div>
+          <h4>Come say hello.</h4>
+          <p>Station Road, Jalaun, Uttar Pradesh</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Station+Road+Jalaun+Uttar+Pradesh" target="_blank" rel="noreferrer">Find us on the map</a>
+        </div>
+
+        <div>
+          <h4>Get in touch</h4>
+          <p>For orders, quotes, and printing support.</p>
+          <a href="tel:+919999999999">+91 99999 99999</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
