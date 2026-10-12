@@ -213,9 +213,12 @@ button {
 .lang-modal-box,
 .auth-modal-box {
   width: min(700px, 100%);
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: #fff;
   border-radius: 28px;
-  padding: 28px 26px 20px;
+  padding: clamp(20px, 5vw, 28px) clamp(18px, 5vw, 26px) 20px;
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.18);
 }
 
@@ -314,7 +317,7 @@ button {
   position: relative;
   min-height: 515px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   align-items: end;
 }
@@ -918,17 +921,94 @@ button {
 }
 
 @media (max-width: 560px) {
-  .header-actions {
-    width: 100%;
-    justify-content: space-between;
+  .topline {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.4;
   }
 
-  .topline {
-    letter-spacing: 0.1em;
-    font-size: 10px;
+  .topline span {
+    margin-left: 0;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+
+  .hero-visual {
+    min-height: 360px;
+    gap: 12px;
+  }
+
+  .print-card {
+    min-height: 180px;
+    padding: 18px 14px;
+    border-radius: 20px;
+  }
+
+  .print-card-large {
+    min-height: 210px;
+  }
+
+  .cart-item {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .cart-item-icon {
+    grid-row: 1 / span 2;
+  }
+
+  .cart-item-meta {
+    grid-column: 2 / -1;
+  }
+
+  .cart-item-controls {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .cart-item > strong {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .cart-item .remove-btn {
+    grid-column: 2 / -1;
+    justify-self: start;
+  }
+
+  .cart-item > * {
+    min-width: 0;
   }
 
   .language-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .lang-option {
+    min-height: 44px;
+    padding: 8px;
+    text-align: center;
+  }
+
+  .lang-modal-box h2 {
+    margin: 0 0 8px;
+    font-size: 1.4rem;
+    line-height: 1.2;
+  }
+
+  .lang-subtitle {
+    margin-bottom: 12px;
+  }
+
+  .lang-modal-box .button.full-width {
+    margin-top: 12px;
   }
 }
