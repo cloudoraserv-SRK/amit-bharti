@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Amit Bharti</title>
+    <meta name="description" content="Admin dashboard for managing products, services, portfolio, blog, settings and enquiries." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="admin-body">
+    <header class="admin-shell-header">
+      <div class="container admin-header-inner">
+        <div class="brand">
+          <div class="brand-mark logo-mark"><img src="../assets/logo/logo.jpg" alt="" /></div>
+          <div class="brand-text">
+            <strong>AB AD WORLD</strong>
+            <span>ADMIN</span>
+          </div>
+        </div>
+        <div class="admin-header-actions">
+          <a class="button small secondary" href="../index.html">Public site</a>
+          <button class="button small hidden" type="button" data-admin-logout>Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="container page-shell admin-login-shell" data-admin-auth-gate>
+      <section class="admin-card admin-login-card">
+        <p class="eyebrow">ADMIN ACCESS</p>
+        <h1>Sign in to manage AB Ad World</h1>
+        <p>Only an authorized admin account can open the dashboard.</p>
+        <form class="admin-form" data-admin-login-form>
+          <label>Email<input type="email" name="email" autocomplete="username" required /></label>
+          <label>Password<input type="password" name="password" autocomplete="current-password" required /></label>
+          <button class="button" type="submit">Admin sign in</button>
+        </form>
+        <p class="catalog-status" data-admin-auth-status role="status" aria-live="polite">Checking Supabase configuration…</p>
+      </section>
+    </section>
+
+    <div class="admin-shell hidden" data-admin-shell>
+      <aside class="admin-sidebar">
+        <nav class="admin-nav" aria-label="Admin navigation">
+          <button class="admin-tab active" data-admin-tab="overview" type="button">Overview</button>
+          <button class="admin-tab" data-admin-tab="products" type="button">Products</button>
+          <button class="admin-tab" data-admin-tab="media" type="button">Media library</button>
+          <button class="admin-tab" data-admin-tab="services" type="button">Services</button>
+          <button class="admin-tab" data-admin-tab="portfolio" type="button">Portfolio</button>
+          <button class="admin-tab" data-admin-tab="content" type="button">Content</button>
+          <button class="admin-tab" data-admin-tab="sections" type="button">Page sections</button>
+          <button class="admin-tab" data-admin-tab="banners" type="button">Banners</button>
+          <button class="admin-tab" data-admin-tab="enquiries" type="button">Enquiries</button>
+          <button class="admin-tab" data-admin-tab="settings" type="button">Settings</button>
+          <button class="admin-tab" data-admin-tab="orders" type="button">Orders</button>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <p class="catalog-status admin-install-hint">On Android, open the public site in Chrome and choose “Install app” or “Add to Home screen”.</p>
+        <section class="admin-panel active" data-admin-panel="overview">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">OVERVIEW</p>
+              <h2>Business performance</h2>
+            </div>
+          </div>
+          <p class="catalog-status" data-admin-overview-status role="status" aria-live="polite">Waiting for Supabase data…</p>
+          <div class="stats-grid admin-stats" data-admin-overview-stats></div>
+          <div class="admin-grid-two">
+            <div class="admin-card">
+              <h3>Recent orders</h3>
+              <div class="admin-list" data-admin-orders></div>
+            </div>
+            <div class="admin-card">
+              <h3>Enquiries</h3>
+              <div class="admin-list" data-admin-recent-enquiries></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="products">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">PRODUCTS</p>
+              <h2>Catalog management</h2>
+            </div>
+          </div>
+          <div data-product-catalog-admin>
+            <div class="admin-card service-auth-card">
+              <h3>Product manager access</h3>
+              <p>Sign in from the Services tab. Product changes require the same Supabase admin role.</p>
+              <p class="catalog-status" data-product-admin-status role="status" aria-live="polite">Checking admin session…</p>
+              <button class="button secondary" type="button" data-product-go-signin>Go to admin sign-in</button>
+            </div>
+            <div class="admin-grid-two hidden" data-product-admin-workspace>
+              <div class="admin-card">
+                <h3>Product details</h3>
+                <form class="admin-form" data-product-form>
+                  <input type="hidden" name="id" />
+                  <label>Name<input name="name" type="text" required maxlength="160" /></label>
+                  <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" required maxlength="180" /></label>
+                  <p class="catalog-status">Products are physical items customers can buy, such as banners, boards and printed materials. Add creative, marketing and website work under Services.</p>
+                  <div class="field-grid">
+                    <label>Product category<input name="category" type="text" list="product-categories" required value="Print Products" /><datalist id="product-categories"><option value="Print Products"></option><option value="Signage"></option><option value="Display Products"></option><option value="Promotional Products"></option><option value="Other Physical Products"></option></datalist></label>
+                    <label>Base price (INR)<input name="base_price" type="number" min="0" step="0.01" required /></label>
+                    <label>Offer price (INR)<input name="sale_price" type="number" min="0" step="0.01" placeholder="Leave blank for no offer" /></label>
+                  </div>
+                  <label>Short description<input name="short_description" type="text" maxlength="240" /></label>
+                  <label>Description<textarea name="description" rows="4"></textarea></label>
+                  <label>Specifications<textarea name="specifications" rows="5" placeholder="Material: vinyl&#10;Size: custom"></textarea></label>
+                  <p class="catalog-status">Enter details as “Label: value” on separate lines. Plain text also works.</p>
+                  <div class="field-grid">
+                    <label>Weight (grams)<input name="weight_grams" type="number" min="1" step="1" /></label>
+                    <label>HSN code<input name="hsn_code" type="text" maxlength="20" /></label>
+                    <label>Length (cm)<input name="length_cm" type="number" min="0.1" step="0.01" /></label>
+                    <label>Breadth (cm)<input name="breadth_cm" type="number" min="0.1" step="0.01" /></label>
+                    <label>Height (cm)<input name="height_cm" type="number" min="0.1" step="0.01" /></label>
+                  </div>
+                  <label>Product image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+                  <p class="catalog-status">Images: PNG, JPG or WebP, up to 5 MB.</p>
+                  <label class="check-field"><input name="is_published" type="checkbox" /> Publish product</label>
+                  <div class="inline-actions">
+                    <button class="button" type="submit">Save product</button>
+                    <button class="button secondary" type="reset">Clear</button>
+                  </div>
+                </form>
+              </div>
+              <div class="admin-card">
+                <h3>Products</h3>
+                <div class="admin-list compact" data-product-admin-list></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="media">
+          <div class="section-heading admin-section-heading"><div><p class="eyebrow">MEDIA LIBRARY</p><h2>Uploaded images</h2></div></div>
+          <div class="admin-grid-two">
+            <div class="admin-card">
+              <h3>Upload asset</h3>
+              <form class="admin-form" data-media-form>
+                <label>File<input name="file" type="file" accept="image/png,image/jpeg,image/webp" required /></label>
+                <label>Image description<input name="alt_text" type="text" maxlength="240" required /></label>
+                <label>Collection<select name="collection"><option value="library">General library</option><option value="website">Website work</option><option value="print">Print work</option><option value="page">Page backgrounds</option><option value="promotion">Promotions</option></select></label>
+                <label class="check-field"><input name="is_public" type="checkbox" /> Allow this image in public media browsing</label>
+                <button class="button" type="submit">Upload image</button>
+              </form>
+              <p class="catalog-status" data-media-status role="status" aria-live="polite"></p>
+            </div>
+            <div class="admin-card"><h3>Library</h3><div class="media-library-grid" data-media-library></div></div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="services">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">SERVICES</p>
+              <h2>AB Ad World rate list</h2>
+            </div>
+          </div>
+          <div data-service-catalog-admin>
+            <div class="admin-card service-auth-card">
+              <h3>Admin sign-in</h3>
+              <p>Only an authenticated account with the AB Ad World admin role can manage catalogue entries.</p>
+              <form class="admin-form" data-service-login-form>
+                <input type="email" name="email" autocomplete="username" placeholder="Admin email" required />
+                <input type="password" name="password" autocomplete="current-password" placeholder="Password" required />
+                <button class="button" type="submit">Sign in</button>
+              </form>
+              <div class="inline-actions hidden" data-service-session-actions>
+                <span data-service-admin-email></span>
+                <button class="button secondary" type="button" data-service-logout>Sign out</button>
+              </div>
+              <p class="catalog-status" data-admin-catalog-status role="status" aria-live="polite"></p>
+            </div>
+
+            <div class="admin-grid-two service-admin-workspace hidden" data-service-admin-workspace>
+              <div class="admin-card">
+                <h3>Service or deliverable</h3>
+                <p class="catalog-status">Services are work you perform, such as printing by size, social media management, design or website development. Set a rate or choose “by quote.”</p>
+                <form class="admin-form" data-service-form>
+                  <input type="hidden" name="id" />
+                  <label>Name<input name="name" type="text" required /></label>
+                  <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" required /></label>
+                  <div class="field-grid">
+                    <label>Category<input name="category" type="text" list="service-categories" value="Offline Printing" required /><datalist id="service-categories"><option value="Offline Printing"></option><option value="Social Media"></option><option value="Websites"></option></datalist></label>
+                    <label>Unit
+                      <select name="unit" required>
+                        <option value="per_sq_ft">per_sq_ft</option>
+                        <option value="per_piece">per_piece</option>
+                        <option value="per_day">per_day</option>
+                        <option value="per_page">per_page</option>
+                        <option value="per_vehicle">per_vehicle</option>
+                        <option value="one_time">one_time</option>
+                        <option value="quote">quote</option>
+                      </select>
+                    </label>
+                  </div>
+                  <label>Price in INR<input name="price" type="number" min="0" step="0.01" /></label>
+                  <label>Short note<input name="price_note" type="text" /></label>
+                  <label>Description<textarea name="description" rows="3"></textarea></label>
+                  <label>Service image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+                  <p class="catalog-status">Add a photo or sample that helps explain this service. PNG, JPG or WebP, up to 8 MB.</p>
+                  <label class="check-field"><input name="is_price_from" type="checkbox" /> Starting price</label>
+                  <label class="check-field"><input name="is_active" type="checkbox" /> Active</label>
+                  <label class="check-field"><input name="needs_confirmation" type="checkbox" checked /> Needs owner approval before it appears publicly</label>
+                  <p class="catalog-status">To show on the website, a service must be Active and have “Needs owner approval” unchecked. Use Approve &amp; publish in the list for entries you have reviewed.</p>
+                  <div class="inline-actions">
+                    <button class="button" type="submit">Save item</button>
+                    <button class="button secondary" type="reset">Clear</button>
+                  </div>
+                </form>
+              </div>
+              <div class="admin-card">
+                <h3>All catalogue entries</h3>
+                <div class="admin-list compact" data-service-admin-list></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="portfolio">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">PORTFOLIO</p>
+              <h2>Completed work</h2>
+            </div>
+          </div>
+          <div class="admin-grid-two">
+            <div class="admin-card">
+              <h3>Portfolio item</h3>
+              <form class="admin-form" data-portfolio-form>
+                <input type="hidden" name="id" />
+                <label>Title<input name="title" type="text" maxlength="180" required /></label>
+                <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="200" required /></label>
+                <label>Category<input name="category" type="text" list="portfolio-categories" placeholder="Website, Social Media, Print" /><datalist id="portfolio-categories"><option value="Website"></option><option value="Social Media"></option><option value="Print"></option><option value="Branding"></option><option value="Signage"></option></datalist></label>
+                <p class="catalog-status">Portfolio shows finished client work. Add one entry per project with a real sample image/video and a short description of the brief and result.</p>
+                <label>Description<textarea name="description" rows="4"></textarea></label>
+                <label>Cover image or social video<input name="image" type="file" accept="image/png,image/jpeg,image/webp,video/mp4,video/webm" /></label>
+                <p class="catalog-status">Images up to 8 MB; MP4 or WebM videos up to 50 MB.</p>
+                <label class="check-field"><input name="is_published" type="checkbox" /> Publish project</label>
+                <div class="inline-actions">
+                  <button class="button" type="submit">Save project</button>
+                  <button class="button secondary" type="reset">Clear</button>
+                </div>
+              </form>
+            </div>
+            <div class="admin-card">
+              <h3>Projects</h3>
+              <p class="catalog-status" data-portfolio-admin-status role="status" aria-live="polite"></p>
+              <div class="admin-list" data-admin-portfolio-list></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="sections">
+          <div class="section-heading admin-section-heading"><div><p class="eyebrow">PAGE SECTIONS</p><h2>Add or remove page content blocks</h2></div></div>
+          <div class="admin-grid-two">
+            <div class="admin-card">
+              <h3>Section editor</h3>
+              <form class="admin-form" data-page-section-form>
+                <input type="hidden" name="id" />
+                <div class="field-grid">
+                  <label>Page slug<input name="page_slug" type="text" placeholder="home, about, contact" required /></label>
+                  <label>Section key<input name="section_key" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" required /></label>
+                </div>
+                <label>Section type<select name="section_type"><option value="text">Text</option><option value="image">Image</option><option value="image_text">Image + text</option><option value="gallery">Image gallery</option><option value="cta">Call to action</option><option value="website_projects">Website projects</option></select></label>
+                <label>Gallery collection<input name="media_collection" type="text" placeholder="print, website, or page-specific collection" /></label>
+                <label>Heading<input name="title" type="text" required maxlength="200" /></label>
+                <label>Subtitle<input name="subtitle" type="text" maxlength="300" /></label>
+                <label>Text<textarea name="body" rows="4"></textarea></label>
+                <label>Image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+                <label>Image description<input name="image_alt" type="text" maxlength="240" /></label>
+                <div class="field-grid"><label>Button label<input name="button_label" type="text" /></label><label>Button URL<input name="button_url" type="text" /></label></div>
+                <label>Display order<input name="display_order" type="number" value="0" step="1" /></label>
+                <label class="check-field"><input name="is_active" type="checkbox" /> Publish section</label>
+                <div class="inline-actions"><button class="button" type="submit">Save section</button><button class="button secondary" type="reset">Clear</button></div>
+              </form>
+            </div>
+            <div class="admin-card"><h3>Sections</h3><p class="catalog-status" data-page-sections-status role="status" aria-live="polite"></p><div class="admin-list" data-admin-page-sections></div></div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="banners">
+          <div class="section-heading admin-section-heading"><div><p class="eyebrow">PROMOTIONS</p><h2>Offer banners</h2></div></div>
+          <div class="admin-grid-two">
+            <div class="admin-card">
+              <h3>Banner editor</h3>
+              <form class="admin-form" data-banner-form>
+                <input type="hidden" name="id" />
+                <label>Page slug<input name="page_slug" type="text" value="home" required /></label>
+                <p class="catalog-status">Use <strong>home</strong> to show this banner on the homepage. It only appears while activated and within its start/end dates.</p>
+                <label>Title<input name="title" type="text" maxlength="200" /></label>
+                <label>Subtitle<input name="subtitle" type="text" maxlength="300" /></label>
+                <label>Offer details<textarea name="body" rows="3"></textarea></label>
+                <label>Banner image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+                <div class="field-grid"><label>Button label<input name="button_label" type="text" /></label><label>Button link<input name="link_url" type="text" /></label></div>
+                <div class="field-grid"><label>Starts at<input name="starts_at" type="datetime-local" /></label><label>Ends at<input name="ends_at" type="datetime-local" /></label></div>
+                <label>Display order<input name="display_order" type="number" value="0" step="1" /></label>
+                <label class="check-field"><input name="is_active" type="checkbox" /> Activate banner</label>
+                <div class="inline-actions"><button class="button" type="submit">Save banner</button><button class="button secondary" type="reset">Clear</button></div>
+              </form>
+            </div>
+            <div class="admin-card"><h3>Banners</h3><p class="catalog-status" data-banners-status role="status" aria-live="polite"></p><div class="admin-list" data-admin-banners></div></div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="content">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">CONTENT</p>
+              <h2>Website copy and media</h2>
+            </div>
+          </div>
+          <div class="admin-grid-two">
+            <div class="admin-card">
+              <h3>Blog post</h3>
+              <form class="admin-form" data-blog-form>
+                <input type="hidden" name="id" />
+                <label>Title<input name="title" type="text" maxlength="200" required /></label>
+                <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="220" required /></label>
+                <label>Excerpt<textarea name="excerpt" rows="2" maxlength="500"></textarea></label>
+                <label>Article content<textarea name="content" rows="8" required></textarea></label>
+                <label>Featured image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+                <label>Status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
+                <div class="inline-actions">
+                  <button class="button" type="submit">Save post</button>
+                  <button class="button secondary" type="reset">Clear</button>
+                </div>
+              </form>
+              <p class="catalog-status" data-blog-admin-status role="status" aria-live="polite"></p>
+              <div class="admin-list compact" data-admin-blog-list></div>
+            </div>
+            <div class="admin-card">
+              <h3>FAQ item</h3>
+              <form class="admin-form" data-faq-form>
+                <input type="hidden" name="id" />
+                <label>Question<input name="question" type="text" maxlength="300" required /></label>
+                <label>Answer<textarea name="answer" rows="4" maxlength="5000" required></textarea></label>
+                <label class="check-field"><input name="is_published" type="checkbox" /> Publish answer</label>
+                <div class="inline-actions">
+                  <button class="button" type="submit">Save FAQ</button>
+                  <button class="button secondary" type="reset">Clear</button>
+                </div>
+              </form>
+              <p class="catalog-status" data-faq-admin-status role="status" aria-live="polite"></p>
+              <div class="admin-list compact" data-admin-faq-list></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="enquiries">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">ENQUIRIES</p>
+              <h2>Customer messages</h2>
+            </div>
+          </div>
+          <div class="admin-card">
+            <p class="catalog-status" data-admin-enquiries-status role="status" aria-live="polite"></p>
+            <div class="admin-list" data-admin-enquiries></div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="settings">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">SETTINGS</p>
+              <h2>Business configuration</h2>
+            </div>
+          </div>
+          <div class="admin-card">
+            <form class="admin-form wide-form" id="siteSettingsForm">
+              <div class="field-grid">
+                <label>Business name<input type="text" id="settingsBusinessName" placeholder="Business name" /></label>
+                <label>Address<input type="text" id="settingsAddress" placeholder="Address" /></label>
+                <label>Phone<input type="text" id="settingsPhone" placeholder="Phone" /></label>
+                <label>WhatsApp<input type="text" id="settingsWhatsApp" placeholder="WhatsApp number" /></label>
+                <label>Email<input type="email" id="settingsEmail" placeholder="Email" /></label>
+                <label>Opening hours<input type="text" id="settingsHours" placeholder="Opening hours" /></label>
+                <label>Map URL<input type="url" id="settingsMapLink" placeholder="Map URL" /></label>
+                <label>Slogan<input type="text" id="settingsSlogan" placeholder="Slogan" /></label>
+              </div>
+              <button class="button" type="submit">Save settings</button>
+              <p class="catalog-status" data-settings-status role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="orders">
+          <div class="section-heading admin-section-heading">
+            <div>
+              <p class="eyebrow">ORDERS</p>
+              <h2>Purchase and payment status</h2>
+            </div>
+          </div>
+          <div class="admin-card">
+            <p class="catalog-status" data-admin-orders-status role="status" aria-live="polite"></p>
+            <div class="admin-list" data-admin-order-list></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase-config.js"></script>
+    <script src="../script.js"></script>
+    <script src="../service-catalog.js"></script>
+    <script src="../commerce.js"></script>
+  </body>
+</html>
