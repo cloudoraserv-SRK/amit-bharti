@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article | AB Ad World</title>
+    <meta name="description" content="Articles on advertising, printing, branding and digital growth from AB Ad World." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="topline"><span>AB AD WORLD · INSIGHTS</span></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="AB Ad World home">
+          <div class="brand-mark">ab</div>
+          <div class="brand-text"><strong>AB AD WORLD</strong><span>ADVERTISING & DIGITAL</span></div>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="products.html">Shop</a>
+          <a href="services.html">Services</a>
+          <a href="portfolio.html">Portfolio</a>
+          <a href="blog.html">All articles</a>
+        </nav>
+      </div>
+    </header>
+    <main class="page-shell">
+      <article class="container blog-article" data-blog-post aria-live="polite">
+        <p class="catalog-status" data-blog-post-status role="status" aria-live="polite">Loading article…</p>
+      </article>
+    </main>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div><strong>AB AD WORLD</strong><p>Advertising, printing, branding and digital services.</p></div>
+        <div><h4>Explore</h4><a href="services.html">Services</a></div>
+        <div><h4>Support</h4><a href="contact.html">Contact</a></div>
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="commerce.js"></script>
+  </body>
+</html>

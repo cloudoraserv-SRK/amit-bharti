@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "AB Ad World",
+  "short_name": "AB Ad World",
+  "description": "Advertising, printing, branding and digital services from AB Ad World.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f3ee",
+  "theme_color": "#1c4031",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/logo/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logo/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/svg/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

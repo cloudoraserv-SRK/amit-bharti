@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Account | AB Ad World</title>
+    <meta name="description" content="Sign in to view your AB Ad World orders and saved products." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="topline"><span>AB AD WORLD · CUSTOMER ACCOUNT</span></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="AB Ad World home">
+          <div class="brand-mark">ab</div>
+          <div class="brand-text"><strong>AB AD WORLD</strong><span>ADVERTISING & DIGITAL</span></div>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="products.html">Shop</a>
+          <a href="services.html">Services</a>
+          <a href="cart.html">Cart</a>
+        </nav>
+        <div class="header-actions"><a class="button small" href="admin/index.html">Admin</a></div>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <div class="container account-shell" data-customer-account>
+        <section class="account-auth admin-card" data-account-auth>
+          <p class="eyebrow">CUSTOMER ACCOUNT</p>
+          <h1>Sign in or create an account</h1>
+          <p>Use your account to save products and review order requests.</p>
+          <div class="account-mode-tabs" role="tablist" aria-label="Account access">
+            <button class="filter-btn active" type="button" role="tab" aria-selected="true" data-account-mode="login">Sign in</button>
+            <button class="filter-btn" type="button" role="tab" aria-selected="false" data-account-mode="signup">Create account</button>
+          </div>
+          <form class="admin-form" data-customer-auth-form>
+            <label data-account-name-wrap class="hidden">Full name<input name="full_name" type="text" autocomplete="name" /></label>
+            <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+            <label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required /></label>
+            <button class="button" type="submit" data-account-submit>Sign in</button>
+            <button class="text-btn" type="button" data-password-reset>Send password reset email</button>
+          </form>
+          <p class="catalog-status" data-account-status role="status" aria-live="polite">Configure Supabase to enable customer accounts.</p>
+        </section>
+
+        <section class="account-dashboard hidden" data-account-dashboard>
+          <div class="account-heading">
+            <div>
+              <p class="eyebrow">YOUR ACCOUNT</p>
+              <h1>Orders and saved products</h1>
+              <p data-account-email></p>
+            </div>
+            <button class="button secondary" type="button" data-customer-logout>Sign out</button>
+          </div>
+          <section class="account-section account-profile-section">
+            <h2>Your profile</h2>
+            <form class="admin-form account-profile-form" data-customer-profile-form>
+              <label>Full name<input name="full_name" type="text" maxlength="160" autocomplete="name" /></label>
+              <label>Phone<input name="phone" type="tel" maxlength="40" autocomplete="tel" /></label>
+              <button class="button" type="submit">Save profile</button>
+              <p class="catalog-status" data-profile-status role="status" aria-live="polite"></p>
+            </form>
+          </section>
+          <section class="account-section">
+            <h2>Purchase history</h2>
+            <p class="catalog-status" data-orders-status role="status" aria-live="polite"></p>
+            <div class="account-list" data-customer-orders></div>
+          </section>
+          <section class="account-section">
+            <h2>Favorites</h2>
+            <p class="catalog-status" data-favorites-status role="status" aria-live="polite"></p>
+            <div class="product-grid" data-customer-favorites></div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div><strong>AB AD WORLD</strong><p>Advertising, printing, branding and digital services.</p></div>
+        <div><h4>Shop</h4><a href="products.html">Browse products</a></div>
+        <div><h4>Support</h4><a href="contact.html">Contact</a></div>
+      </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="commerce.js"></script>
+  </body>
+</html>

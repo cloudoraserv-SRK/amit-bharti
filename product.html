@@ -3,37 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product Detail | Amit Bharti Flex & Printing</title>
-    <meta name="description" content="Product detail page for custom printing orders." />
+    <title>Product Details | AB Ad World</title>
+    <meta name="description" content="Product details page for custom print and branding products." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="topline"><span>YOUR IDEAS. BEAUTIFULLY PRINTED.</span> <span>Station Road · Jalaun, U.P.</span></div>
+    <div class="topline"><span>YOUR IDEAS. BEAUTIFULLY PRINTED.</span> <span data-site-location>Station Road · Jalaun, U.P.</span></div>
 
     <header class="site-header">
       <div class="container header-inner">
         <a class="brand" href="index.html" aria-label="Amit Bharti home">
           <div class="brand-mark">ab</div>
-          <div class="brand-text">
-            <strong>AMIT BHARTI</strong>
-            <span>FLEX & PRINTING</span>
-          </div>
+          <div class="brand-text"><strong>AB AD WORLD</strong><span>ADVERTISING & DIGITAL</span></div>
         </a>
-
         <nav class="main-nav" aria-label="Main navigation">
-          <a href="products.html">Shop all prints</a>
-          <a href="index.html#templates">Templates</a>
-          <a href="index.html#services">Our services</a>
-          <a href="index.html#visit">Visit our shop</a>
+          <a href="index.html">Home</a>
+          <a href="products.html">Shop</a>
+          <a href="services.html">Services</a>
+          <a href="portfolio.html">Portfolio</a>
+          <a href="contact.html">Contact</a>
         </nav>
-
         <div class="header-actions">
-          <button class="nav-link lang-switch" id="langToggle" type="button">Language</button>
+          <a class="nav-link text-btn" href="account.html">Account</a>
           <a class="nav-link text-btn" href="cart.html">Cart</a>
-          <a class="button small" href="index.html#quote">Get quote</a>
+          <a class="button small" href="admin/index.html">Admin</a>
         </div>
       </div>
     </header>
@@ -47,24 +43,19 @@
         <div>
           <a class="brand footer-brand" href="index.html">
             <div class="brand-mark">ab</div>
-            <div class="brand-text">
-              <strong>AMIT BHARTI</strong>
-              <span>FLEX & PRINTING</span>
-            </div>
+            <div class="brand-text"><strong>AB AD WORLD</strong><span>ADVERTISING & DIGITAL</span></div>
           </a>
-          <p>Custom print. Local expertise.</p>
+          <p>Printing, packaging and branding support built around local businesses.</p>
         </div>
-
         <div>
-          <h4>Come say hello.</h4>
-          <p>Station Road, Jalaun, Uttar Pradesh</p>
-          <a href="https://www.google.com/maps/search/?api=1&query=Station+Road+Jalaun+Uttar+Pradesh" target="_blank" rel="noreferrer">Find us on the map</a>
+          <h4>Visit</h4>
+          <p data-site-location>Station Road, Jalaun, Uttar Pradesh</p>
+          <a href="https://maps.google.com/?q=Station+Road+Jalaun+Uttar+Pradesh" target="_blank" rel="noreferrer">Open map</a>
         </div>
-
         <div>
-          <h4>Get in touch</h4>
-          <p>For orders, quotes, and printing support.</p>
-          <a href="tel:+919999999999">+91 99999 99999</a>
+          <h4>Contact</h4>
+          <p data-site-email>Business email set in admin</p>
+          <a data-site-phone href="tel:+919999999999">Business phone set in admin</a>
         </div>
       </div>
     </footer>
@@ -76,6 +67,9 @@
       </a>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
+    <script src="commerce.js"></script>
   </body>
 </html>

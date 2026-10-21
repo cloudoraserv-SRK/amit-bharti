@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio | Amit Bharti</title>
+    <meta name="description" content="Portfolio of printing, digital and branding work managed by the admin dashboard." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="topline"><span>YOUR IDEAS. BEAUTIFULLY PRINTED.</span> <span data-site-location>Station Road · Jalaun, U.P.</span></div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="index.html" aria-label="Amit Bharti home">
+          <div class="brand-mark">ab</div>
+          <div class="brand-text"><strong>AMIT BHARTI</strong><span>FLEX & PRINTING</span></div>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="products.html">Shop</a>
+          <a href="services.html">Services</a>
+          <a href="blog.html">Blog</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <a class="nav-link text-btn" href="cart.html">Cart</a>
+          <a class="button small" href="admin/index.html">Admin</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <div class="container">
+        <div class="page-heading">
+          <p class="eyebrow">OUR WORK · PRINT · SOCIAL · WEB</p>
+          <h1>Work made to help brands get noticed.</h1>
+          <p class="catalog-intro">Explore selected print, social media and website projects. More work is added as projects are completed.</p>
+        </div>
+        <p class="catalog-status" data-portfolio-status role="status" aria-live="polite">Loading published projects…</p>
+        <div class="portfolio-category-groups" data-portfolio-groups></div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>
+          <a class="brand footer-brand" href="index.html">
+            <div class="brand-mark">ab</div>
+            <div class="brand-text"><strong>AMIT BHARTI</strong><span>FLEX & PRINTING</span></div>
+          </a>
+          <p>Printing, branding and digital support for customer-first businesses.</p>
+        </div>
+        <div>
+          <h4>Visit</h4>
+          <p data-site-location>Station Road, Jalaun, Uttar Pradesh</p>
+          <a href="https://maps.google.com/?q=Station+Road+Jalaun+Uttar+Pradesh" target="_blank" rel="noreferrer">Open map</a>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <p data-site-email>Business email is managed in admin</p>
+          <a data-site-phone href="tel:+919999999999">Business phone set in admin</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="script.js"></script>
+    <script src="commerce.js"></script>
+  </body>
+</html>
