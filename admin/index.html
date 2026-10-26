@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard | Amit Bharti</title>
-    <meta name="description" content="Admin dashboard for managing products, services, portfolio, blog, settings and enquiries." />
+    <title>Admin Dashboard | AB Ad World</title>
+    <link rel="icon" href="../assets/svg/logo.svg" type="image/svg+xml" />
+    <meta name="description" content="Secure AB Ad World administration for products, services, media and site content." />
+    <meta name="robots" content="noindex,nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -14,7 +16,7 @@
     <header class="admin-shell-header">
       <div class="container admin-header-inner">
         <div class="brand">
-          <div class="brand-mark logo-mark"><img src="../assets/logo/logo.jpg" alt="" /></div>
+          <div class="brand-mark logo-mark"><img src="../assets/svg/logo.svg" alt="" /></div>
           <div class="brand-text">
             <strong>AB AD WORLD</strong>
             <span>ADMIN</span>
@@ -102,6 +104,7 @@
                   <input type="hidden" name="id" />
                   <label>Name<input name="name" type="text" required maxlength="160" /></label>
                   <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" required maxlength="180" /></label>
+                  <details class="seo-fields"><summary>Search preview settings (optional)</summary><label>SEO title<input name="seo_title" type="text" maxlength="200" placeholder="Leave blank to use the product name" /></label><label>SEO description<textarea name="seo_description" rows="2" maxlength="320" placeholder="A clear, useful summary of this product"></textarea></label></details>
                   <p class="catalog-status">Products are physical items customers can buy, such as banners, boards and printed materials. Add creative, marketing and website work under Services.</p>
                   <div class="field-grid">
                     <label>Product category<input name="category" type="text" list="product-categories" required value="Print Products" /><datalist id="product-categories"><option value="Print Products"></option><option value="Signage"></option><option value="Display Products"></option><option value="Promotional Products"></option><option value="Other Physical Products"></option></datalist></label>
@@ -119,8 +122,8 @@
                     <label>Breadth (cm)<input name="breadth_cm" type="number" min="0.1" step="0.01" /></label>
                     <label>Height (cm)<input name="height_cm" type="number" min="0.1" step="0.01" /></label>
                   </div>
-                  <label>Product image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
-                  <p class="catalog-status">Images: PNG, JPG or WebP, up to 5 MB.</p>
+                  <label>Product images<input name="images" type="file" accept="image/png,image/jpeg,image/webp" multiple /></label>
+                  <p class="catalog-status">Choose several images for the product gallery. PNG, JPG or WebP, up to 5 MB each. New images are added to existing ones.</p>
                   <label class="check-field"><input name="is_published" type="checkbox" /> Publish product</label>
                   <div class="inline-actions">
                     <button class="button" type="submit">Save product</button>
@@ -144,7 +147,8 @@
               <form class="admin-form" data-media-form>
                 <label>File<input name="file" type="file" accept="image/png,image/jpeg,image/webp" required /></label>
                 <label>Image description<input name="alt_text" type="text" maxlength="240" required /></label>
-                <label>Collection<select name="collection"><option value="library">General library</option><option value="website">Website work</option><option value="print">Print work</option><option value="page">Page backgrounds</option><option value="promotion">Promotions</option></select></label>
+                <label>Collection<select name="collection"><option value="library">General library</option><option value="print-samples">Home · Print gallery</option><option value="social-media-work">Home · Social media gallery</option><option value="portfolio-highlights">Home · Portfolio gallery</option><option value="website-projects">Website projects</option><option value="print">Print work</option><option value="website">Website work</option><option value="page">Page backgrounds</option><option value="promotion">Promotions</option></select></label>
+                <p class="catalog-status">For a Page section gallery, choose the exact collection named in its section (for example “print-samples”). Turn on public browsing so the image can appear on the website.</p>
                 <label class="check-field"><input name="is_public" type="checkbox" /> Allow this image in public media browsing</label>
                 <button class="button" type="submit">Upload image</button>
               </form>
@@ -202,8 +206,8 @@
                   <label>Price in INR<input name="price" type="number" min="0" step="0.01" /></label>
                   <label>Short note<input name="price_note" type="text" /></label>
                   <label>Description<textarea name="description" rows="3"></textarea></label>
-                  <label>Service image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
-                  <p class="catalog-status">Add a photo or sample that helps explain this service. PNG, JPG or WebP, up to 8 MB.</p>
+                  <label>Service images<input name="images" type="file" accept="image/png,image/jpeg,image/webp" multiple /></label>
+                  <p class="catalog-status">Choose several examples for the service gallery. PNG, JPG or WebP, up to 8 MB each. New images are added to existing ones.</p>
                   <label class="check-field"><input name="is_price_from" type="checkbox" /> Starting price</label>
                   <label class="check-field"><input name="is_active" type="checkbox" /> Active</label>
                   <label class="check-field"><input name="needs_confirmation" type="checkbox" checked /> Needs owner approval before it appears publicly</label>
@@ -258,6 +262,14 @@
 
         <section class="admin-panel" data-admin-panel="sections">
           <div class="section-heading admin-section-heading"><div><p class="eyebrow">PAGE SECTIONS</p><h2>Add or remove page content blocks</h2></div></div>
+          <div class="admin-card content-image-guide">
+            <h3>Where to add each image</h3>
+            <p><strong>Homepage hero collage:</strong> supplied site images are in <code>assets/images/work-samples/</code>; change those in the site files.</p>
+            <p><strong>Products / Services:</strong> upload galleries in the matching Products or Services editor.</p>
+            <p><strong>Portfolio projects:</strong> add the cover image or video in Portfolio. Use real work samples approved for public display.</p>
+            <p><strong>Blog articles:</strong> add the featured image in Content while editing the post.</p>
+            <p><strong>Banners:</strong> upload the image in Banners. <strong>Section image:</strong> upload directly in Page sections. <strong>Section gallery:</strong> upload in Media library using the exact Gallery collection shown in the section.</p>
+          </div>
           <div class="admin-grid-two">
             <div class="admin-card">
               <h3>Section editor</h3>
@@ -268,7 +280,7 @@
                   <label>Section key<input name="section_key" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" required /></label>
                 </div>
                 <label>Section type<select name="section_type"><option value="text">Text</option><option value="image">Image</option><option value="image_text">Image + text</option><option value="gallery">Image gallery</option><option value="cta">Call to action</option><option value="website_projects">Website projects</option></select></label>
-                <label>Gallery collection<input name="media_collection" type="text" placeholder="print, website, or page-specific collection" /></label>
+                <label>Gallery collection<input name="media_collection" type="text" placeholder="print-samples, social-media-work, portfolio-highlights" /></label>
                 <label>Heading<input name="title" type="text" required maxlength="200" /></label>
                 <label>Subtitle<input name="subtitle" type="text" maxlength="300" /></label>
                 <label>Text<textarea name="body" rows="4"></textarea></label>
@@ -323,6 +335,7 @@
                 <label>Title<input name="title" type="text" maxlength="200" required /></label>
                 <label>Slug<input name="slug" type="text" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="220" required /></label>
                 <label>Excerpt<textarea name="excerpt" rows="2" maxlength="500"></textarea></label>
+                <details class="seo-fields"><summary>Search preview settings (optional)</summary><label>SEO title<input name="seo_title" type="text" maxlength="200" placeholder="Leave blank to use the article title" /></label><label>SEO description<textarea name="seo_description" rows="2" maxlength="320" placeholder="A clear summary of the article"></textarea></label></details>
                 <label>Article content<textarea name="content" rows="8" required></textarea></label>
                 <label>Featured image<input name="image" type="file" accept="image/png,image/jpeg,image/webp" /></label>
                 <label>Status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
