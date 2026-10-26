@@ -54,23 +54,54 @@
     return result;
   }
 
+  async function attachServiceGalleries(client, services) {
+    const serviceIds = (services || []).map((service) => service.id).filter(Boolean);
+    let images = [];
+    if (serviceIds.length) {
+      const { data, error } = await client.from('service_images')
+        .select('service_id,image_url,alt_text,is_primary,sort_order')
+        .in('service_id', serviceIds)
+        .order('is_primary', { ascending: false })
+        .order('sort_order', { ascending: true });
+      if (!error) images = data || [];
+      else console.warn('Service gallery images are unavailable:', error.message);
+    }
+    const grouped = new Map();
+    images.forEach((image) => {
+      if (!grouped.has(image.service_id)) grouped.set(image.service_id, []);
+      grouped.get(image.service_id).push({ url: image.image_url, alt: image.alt_text || '' });
+    });
+    return (services || []).map((service) => {
+      const gallery = grouped.get(service.id) || [];
+      if (service.image_url && !gallery.some((image) => image.url === service.image_url)) {
+        gallery.unshift({ url: service.image_url, alt: service.name });
+      }
+      return { ...service, gallery_images: gallery };
+    });
+  }
+
   function buildServiceCard(row) {
     const card = document.createElement('article');
     card.className = 'catalog-card';
 
     const heading = document.createElement('div');
     heading.className = 'catalog-card-heading';
-    const imageUrl = safeImageUrl(row.image_url);
-    if (imageUrl) {
-      const image = document.createElement('img');
-      image.className = 'service-card-image';
-      image.src = imageUrl;
-      image.alt = row.name;
-      image.loading = 'lazy';
-      card.append(image);
+    const galleryItems = (row.gallery_images || (row.image_url ? [{ url: row.image_url, alt: row.name }] : []))
+      .map((image) => ({ ...image, url: safeImageUrl(image.url) })).filter((image) => image.url);
+    if (galleryItems.length) {
+      const gallery = document.createElement('div');
+      window.ABImageGallery?.render(gallery, galleryItems, {
+        className: 'service-card-gallery',
+        href: `service.html?slug=${encodeURIComponent(row.slug)}`,
+        linkLabel: `Open ${row.name}`
+      });
+      card.append(gallery);
     }
     const name = document.createElement('h2');
-    name.textContent = row.name;
+    const nameLink = document.createElement('a');
+    nameLink.href = `service.html?slug=${encodeURIComponent(row.slug)}`;
+    nameLink.textContent = row.name;
+    name.append(nameLink);
     const status = document.createElement('span');
     status.className = 'catalog-status-badge';
     status.textContent = 'Approved';
@@ -91,11 +122,15 @@
     const category = document.createElement('p');
     category.className = 'catalog-category';
     category.textContent = row.category;
+    const detailLink = document.createElement('a');
+    detailLink.className = 'small-link service-detail-link';
+    detailLink.href = `service.html?slug=${encodeURIComponent(row.slug)}`;
+    detailLink.textContent = 'View service details';
 
     card.append(heading, price, unit);
     if (description.textContent) card.append(description);
     if (note.textContent) card.append(note);
-    card.append(category);
+    card.append(category, detailLink);
     return card;
   }
 
@@ -185,9 +220,9 @@
       .eq('needs_confirmation', false)
       .order('display_order', { ascending: true })
       .order('name', { ascending: true }))
-      .then(({ data, error }) => {
+      .then(async ({ data, error }) => {
         if (error) throw error;
-        rows = data || [];
+        rows = await attachServiceGalleries(client, data || []);
         const categories = [...new Set([...primaryCategories, ...rows.map((row) => row.category).filter(Boolean)])].sort();
         category.replaceChildren(new Option('All categories', 'all'));
         categories.forEach((value) => category.add(new Option(value, value)));
@@ -219,35 +254,49 @@
     }
 
     showMessage('Loading approved services…');
-    queryServices(client, 'name,category,description,price,currency,unit,price_note,is_price_from', (query) => query
+    queryServices(client, 'id,name,slug,category,description,price,currency,unit,price_note,is_price_from', (query) => query
       .eq('is_active', true)
       .eq('needs_confirmation', false)
       .order('display_order', { ascending: true })
       .order('name', { ascending: true })
       .limit(3))
-      .then(({ data, error }) => {
+      .then(async ({ data, error }) => {
         if (error) throw error;
         if (!data?.length) {
           showMessage('No approved services are published yet.');
           return;
         }
 
-        const cards = data.map((row) => {
+        const services = await attachServiceGalleries(client, data || []);
+        const cards = services.map((row) => {
           const card = document.createElement('article');
           card.className = 'service-card';
+          const galleryItems = (row.gallery_images || []).map((image) => ({ ...image, url: safeImageUrl(image.url) })).filter((image) => image.url);
+          if (galleryItems.length) {
+            const gallery = document.createElement('div');
+            window.ABImageGallery?.render(gallery, galleryItems, {
+              className: 'service-card-gallery',
+              href: `service.html?slug=${encodeURIComponent(row.slug)}`,
+              linkLabel: `Open ${row.name}`
+            });
+            card.append(gallery);
+          }
           const title = document.createElement('h3');
-          title.textContent = row.name;
+          const link = document.createElement('a');
+          link.href = `service.html?slug=${encodeURIComponent(row.slug)}`;
+          link.textContent = row.name;
+          title.append(link);
           const description = document.createElement('p');
           description.textContent = row.description || row.price_note || row.category;
           const meta = document.createElement('div');
           meta.className = 'meta-row';
           const price = document.createElement('span');
           price.textContent = `${formatPrice(row)} ${UNIT_LABELS[row.unit] || row.unit}`;
-          const link = document.createElement('a');
-          link.className = 'small-link';
-          link.href = 'services.html';
-          link.textContent = 'View rate';
-          meta.append(price, link);
+          const rateLink = document.createElement('a');
+          rateLink.className = 'small-link';
+          rateLink.href = `service.html?slug=${encodeURIComponent(row.slug)}`;
+          rateLink.textContent = 'View details';
+          meta.append(price, rateLink);
           card.append(title, description, meta);
           return card;
         });
@@ -257,6 +306,97 @@
         console.error('Homepage services request failed:', error);
         showMessage('Could not load approved services. Visit the rate list or try again later.');
       });
+  }
+
+  async function setupServiceDetail(client) {
+    const root = document.querySelector('[data-service-detail]');
+    if (!root) return;
+    const slug = new URLSearchParams(window.location.search).get('slug');
+    if (!client || !slug) {
+      root.replaceChildren();
+      setStatus(root, !client ? 'Service details are unavailable until Supabase is configured.' : 'Choose a service from the catalogue to view its details.', true);
+      return;
+    }
+
+    const { data, error } = await queryServices(client,
+      'id,name,slug,category,description,price,currency,unit,price_note,is_price_from,is_active,needs_confirmation',
+      (query) => query.eq('slug', slug).eq('is_active', true).eq('needs_confirmation', false).limit(1));
+    const service = data?.[0];
+    if (error || !service) {
+      root.replaceChildren();
+      setStatus(root, error ? `Could not load service: ${error.message}` : 'This service is not published or no longer available.', true);
+      return;
+    }
+    const [withGallery] = await attachServiceGalleries(client, [service]);
+    const layout = document.createElement('div');
+    layout.className = 'detail-layout service-detail-layout';
+    const showcase = document.createElement('div');
+    showcase.className = 'product-showcase';
+    const images = (withGallery.gallery_images || []).map((image) => ({ ...image, url: safeImageUrl(image.url) })).filter((image) => image.url);
+    if (images.length) {
+      const gallery = document.createElement('div');
+      window.ABImageGallery?.render(gallery, images, { className: 'service-detail-gallery', thumbnails: true });
+      showcase.append(gallery);
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'product-visual';
+      placeholder.textContent = 'AB';
+      showcase.append(placeholder);
+    }
+
+    const content = document.createElement('div');
+    content.className = 'detail-content';
+    const category = document.createElement('p');
+    category.className = 'eyebrow';
+    category.textContent = service.category;
+    const heading = document.createElement('h1');
+    heading.textContent = service.name;
+    const price = document.createElement('p');
+    price.className = 'catalog-price detail-price';
+    price.textContent = `${formatPrice(service)} ${UNIT_LABELS[service.unit] || service.unit}`;
+    const description = document.createElement('p');
+    description.className = 'catalog-note';
+    description.textContent = service.description || 'Contact us to discuss the scope and options for this service.';
+    content.append(category, heading, price, description);
+    if (service.price_note) {
+      const note = document.createElement('p');
+      note.className = 'catalog-price-note';
+      note.textContent = service.price_note;
+      content.append(note);
+    }
+    const actions = document.createElement('div');
+    actions.className = 'detail-actions';
+    const quote = document.createElement('a');
+    quote.className = 'button';
+    quote.href = `contact.html?service=${encodeURIComponent(service.slug)}#contactForm`;
+    quote.textContent = 'Request a quote';
+    const catalogue = document.createElement('a');
+    catalogue.className = 'button secondary';
+    catalogue.href = 'services.html';
+    catalogue.textContent = 'Back to services';
+    actions.append(quote, catalogue);
+    content.append(actions);
+    layout.append(showcase, content);
+    root.replaceChildren(layout);
+    const serviceTitle = `${service.name} | AB Ad World`;
+    const serviceDescription = service.description || `Learn about ${service.name} from AB Ad World. Review the scope and request a tailored quote.`;
+    const serviceUrl = new URL(`service.html?slug=${encodeURIComponent(service.slug)}`, window.location.href).href;
+    window.ABSEO?.update({
+      title: serviceTitle,
+      description: serviceDescription,
+      url: serviceUrl,
+      image: images[0]?.url,
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: service.name,
+        serviceType: service.category,
+        description: serviceDescription,
+        provider: { '@type': 'Organization', name: 'AB Ad World', url: 'https://abadworld.cloud/' },
+        areaServed: { '@type': 'AdministrativeArea', name: 'Jalaun, Uttar Pradesh' },
+        url: serviceUrl
+      }
+    });
   }
 
   function setupAdmin(client) {
@@ -297,24 +437,29 @@
         setStatus(status, `Could not load catalogue entries: ${error.message}`, true);
         return;
       }
+      const rowsWithGalleries = await attachServiceGalleries(client, data || []);
 
       const publishedCount = (data || []).filter((row) => row.is_active && !row.needs_confirmation).length;
       const approvalCount = (data || []).filter((row) => row.needs_confirmation).length;
       const inactiveCount = (data || []).filter((row) => !row.is_active).length;
 
       list.replaceChildren();
-      (data || []).forEach((row) => {
+      rowsWithGalleries.forEach((row) => {
         const item = document.createElement('div');
         item.className = 'admin-list-item service-admin-item';
         const details = document.createElement('div');
-        const imageUrl = safeImageUrl(row.image_url);
-        if (imageUrl) {
-          const image = document.createElement('img');
-          image.className = 'service-admin-thumbnail';
-          image.src = imageUrl;
-          image.alt = row.name;
-          image.loading = 'lazy';
-          details.append(image);
+        const thumbnails = (row.gallery_images || []).slice(0, 4);
+        if (thumbnails.length) {
+          const galleryPreview = document.createElement('div');
+          galleryPreview.className = 'admin-gallery-preview';
+          thumbnails.forEach((imageItem) => {
+            const image = document.createElement('img');
+            image.src = safeImageUrl(imageItem.url);
+            image.alt = imageItem.alt || row.name;
+            image.loading = 'lazy';
+            galleryPreview.append(image);
+          });
+          details.append(galleryPreview);
         }
         const title = document.createElement('strong');
         title.textContent = row.name;
@@ -353,11 +498,11 @@
       fields.price.value = row.price ?? '';
       fields.price_note.value = row.price_note || '';
       fields.description.value = row.description || '';
-      fields.image.value = '';
-      fields.image.dataset.currentUrl = row.image_url || '';
+      fields.images.value = '';
       fields.is_price_from.checked = row.is_price_from;
       fields.is_active.checked = row.is_active;
       fields.needs_confirmation.checked = row.needs_confirmation;
+      form.dataset.currentImageCount = String(row.gallery_images?.length || 0);
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -400,6 +545,15 @@
       setStatus(status, 'Signed out.', false);
     });
 
+    form.addEventListener('reset', () => {
+      window.setTimeout(() => {
+        fields.id.value = '';
+        fields.category.value = 'Offline Printing';
+        fields.needs_confirmation.checked = true;
+        delete form.dataset.currentImageCount;
+      }, 0);
+    });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!isAdmin) return;
@@ -419,15 +573,16 @@
         needs_confirmation: fields.needs_confirmation.checked
       };
 
-      const imageFile = fields.image.files[0];
-      if (imageFile) {
+      const imageFiles = Array.from(fields.images.files || []);
+      const uploadedImages = [];
+      for (const [index, imageFile] of imageFiles.entries()) {
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(imageFile.type) || imageFile.size > 8 * 1024 * 1024) {
           setStatus(status, 'Choose a PNG, JPG or WebP service image up to 8 MB.', true);
           return;
         }
         const extension = imageFile.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-        const path = `services/${payload.slug}-${Date.now()}.${extension}`;
-        setStatus(status, 'Uploading service image…', false);
+        const path = `services/${payload.slug}-${Date.now()}-${index}-${crypto.randomUUID()}.${extension}`;
+        setStatus(status, `Uploading service image ${index + 1} of ${imageFiles.length}…`, false);
         let uploadError;
         try {
           ({ error: uploadError } = await client.storage.from('site-content').upload(path, imageFile, {
@@ -443,8 +598,14 @@
           setStatus(status, `Image upload failed: ${uploadError.message}. Confirm migration 004 created the site-content bucket and admin upload policy.${networkHint}`, true);
           return;
         }
-        payload.image_url = client.storage.from('site-content').getPublicUrl(path).data.publicUrl;
+        uploadedImages.push({
+          image_url: client.storage.from('site-content').getPublicUrl(path).data.publicUrl,
+          alt_text: imageFile.name.replace(/\.[^.]+$/, ''),
+          is_primary: !payload.image_url && index === 0,
+          sort_order: Number(form.dataset.currentImageCount || 0) + index + 1
+        });
       }
+      if (uploadedImages.length && !payload.image_url) payload.image_url = uploadedImages[0].image_url;
 
       if (!payload.name || !payload.slug || !payload.category || !payload.unit || (payload.price !== null && (!Number.isFinite(payload.price) || payload.price < 0))) {
         setStatus(status, 'Enter a name, slug, category and unit, and use a non-negative price.', true);
@@ -453,9 +614,9 @@
 
       setStatus(status, 'Saving catalogue item…', false);
       const query = fields.id.value
-        ? client.from('services').update(payload).eq('id', fields.id.value)
-        : client.from('services').insert(payload);
-      const { error } = await query;
+        ? client.from('services').update(payload).eq('id', fields.id.value).select('id').single()
+        : client.from('services').insert(payload).select('id').single();
+      const { data: savedService, error } = await query;
       if (error) {
         const migrationHint = payload.image_url && /image_url|column/i.test(error.message || '')
           ? ' Apply Supabase migration 013_service_images.sql, then retry.'
@@ -464,10 +625,21 @@
         return;
       }
 
+      if (uploadedImages.length) {
+        const { error: galleryError } = await client.from('service_images').insert(
+          uploadedImages.map((image) => ({ ...image, service_id: savedService.id }))
+        );
+        if (galleryError) {
+          setStatus(status, `Service saved, but its gallery could not be linked: ${galleryError.message}. Apply migration 014_service_image_gallery.sql, then retry adding the images.`, true);
+          await loadAdminRows();
+          return;
+        }
+      }
+
       form.reset();
       fields.id.value = '';
+      delete form.dataset.currentImageCount;
       fields.category.value = 'Offline Printing';
-      fields.image.dataset.currentUrl = '';
       fields.needs_confirmation.checked = true;
       setStatus(status, 'Catalogue item saved.', false);
       await loadAdminRows();
@@ -490,6 +662,7 @@
     const client = createClient();
     setupPublicCatalog(client);
     setupHomeServices(client);
+    setupServiceDetail(client);
     setupAdmin(client);
   });
 })();

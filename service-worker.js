@@ -1,15 +1,23 @@
-const CACHE_NAME = 'ab-ad-world-shell-v11';
+const CACHE_NAME = 'ab-ad-world-shell-v13';
 const SHELL_FILES = [
   './',
   './index.html',
   './styles.css',
   './script.js',
   './commerce.js',
+  './seo.js',
   './service-catalog.js',
+  './image-gallery.js',
+  './service.html',
   './supabase-config.js',
   './manifest.webmanifest',
   './assets/svg/logo.svg',
-  './assets/logo/logo.jpg'
+  './assets/logo/logo.jpg',
+  './assets/images/work-samples/retroreflective-sign.jpg',
+  './assets/images/work-samples/vinyl-print.jpg',
+  './assets/images/work-samples/printed-canopy.jpg',
+  './assets/images/work-samples/display-stand.jpg',
+  './assets/images/work-samples/promotional-board.jpg'
 ];
 
 self.addEventListener('install', (event) => {

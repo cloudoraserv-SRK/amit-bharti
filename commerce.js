@@ -67,7 +67,9 @@
     if (!value) return '';
     try {
       const url = new URL(value, window.location.href);
-      return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+      if (!['https:', 'http:'].includes(url.protocol)) return '';
+      if (url.origin === window.location.origin && /(^|\/)admin(?:\/|$)/i.test(url.pathname)) return '';
+      return url.href;
     } catch (error) {
       return '';
     }
@@ -251,11 +253,11 @@
     const gallery = document.createElement('div');
     gallery.className = 'managed-gallery';
     [
-      ['assets/images/product%20images/venyl/IMG-20260929-WA0013.jpg', 'Vinyl print sample'],
-      ['assets/images/product%20images/standy/IMG-20260929-WA0014.jpg', 'Display stand sample'],
-      ['assets/images/product%20images/retro%20reflecttor/IMG-20260929-WA0011.jpg', 'Retroreflective sign sample'],
-      ['assets/images/product%20images/poll%20board/IMG-20260929-WA0012.jpg', 'Promotional board sample'],
-      ['assets/images/product%20images/cannopy/IMG-20260929-WA0015.jpg', 'Canopy print sample']
+      ['assets/images/work-samples/vinyl-print.jpg', 'Vinyl print sample'],
+      ['assets/images/work-samples/display-stand.jpg', 'Display stand sample'],
+      ['assets/images/work-samples/retroreflective-sign.jpg', 'Retroreflective sign sample'],
+      ['assets/images/work-samples/promotional-board.jpg', 'Promotional board sample'],
+      ['assets/images/work-samples/printed-canopy.jpg', 'Canopy print sample']
     ].forEach(([src, alt]) => {
       const figure = document.createElement('figure');
       const image = document.createElement('img');
@@ -435,6 +437,7 @@
             const image = document.createElement('img');
             image.src = safeImageUrl(banner.image_url);
             image.alt = banner.title || 'AB Ad World promotion';
+            image.addEventListener('error', () => image.remove(), { once: true });
             card.append(image);
           }
           const copy = document.createElement('div');
@@ -443,10 +446,10 @@
           const subtitle = document.createElement('p');
           subtitle.textContent = banner.subtitle || banner.body || '';
           copy.append(title, subtitle);
-          if (banner.button_label && safeLinkUrl(banner.link_url)) {
+          if (banner.button_label) {
             const link = document.createElement('a');
             link.className = 'button secondary';
-            link.href = safeLinkUrl(banner.link_url);
+            link.href = safeLinkUrl(banner.link_url) || 'contact.html#contactForm';
             link.textContent = banner.button_label;
             copy.append(link);
           }
@@ -487,7 +490,7 @@
         const section = document.createElement('section');
         section.className = `managed-section managed-section-${item.section_type}`;
         const content = document.createElement('div');
-        content.className = 'container managed-section-content';
+        content.className = `container managed-section-content managed-section-content-${item.section_type}`;
         if (item.title) {
           const title = document.createElement('h2');
           title.textContent = item.title;
@@ -511,7 +514,10 @@
           image.src = imageUrl;
           image.alt = item.image_alt || item.title || '';
           image.loading = 'lazy';
+          image.addEventListener('error', () => image.remove(), { once: true });
           content.append(image);
+        } else if (!['gallery', 'cta', 'website_projects'].includes(item.section_type)) {
+          content.classList.add('managed-section-content-no-image');
         }
         if (item.section_type === 'website_projects') {
           const link = document.createElement('a');
@@ -523,6 +529,14 @@
           const link = document.createElement('a');
           link.className = 'button secondary';
           link.href = safeLinkUrl(item.button_url);
+          link.textContent = item.button_label;
+          content.append(link);
+        } else if (item.button_label) {
+          const link = document.createElement('a');
+          link.className = 'button secondary';
+          link.href = ['gallery', 'website_projects'].includes(item.section_type)
+            ? 'portfolio.html'
+            : item.section_type === 'cta' ? 'contact.html#contactForm' : 'services.html';
           link.textContent = item.button_label;
           content.append(link);
         }
@@ -537,12 +551,20 @@
             image.src = imageUrl;
             image.alt = asset.alt_text;
             image.loading = 'lazy';
+            image.addEventListener('error', () => figure.remove(), { once: true });
             const caption = document.createElement('figcaption');
             caption.textContent = asset.alt_text;
             figure.append(image, caption);
             gallery.append(figure);
           });
-          content.append(gallery);
+          if (gallery.childElementCount) {
+            content.append(gallery);
+          } else {
+            const empty = document.createElement('p');
+            empty.className = 'managed-gallery-empty';
+            empty.textContent = `Gallery coming soon. Add approved images to the “${item.media_collection || 'gallery'}” collection in Admin → Media library.`;
+            content.append(empty);
+          }
         }
         section.append(content);
         return section;
@@ -563,7 +585,7 @@
       return;
     }
     const { data, error } = await client.from('blog_posts')
-      .select('title,slug,excerpt,content,featured_image_url,published_at')
+      .select('title,slug,excerpt,content,featured_image_url,published_at,seo_title,seo_description')
       .eq('slug', slug)
       .eq('status', 'published')
       .maybeSingle();
@@ -606,7 +628,25 @@
     });
     elements.push(content);
     root.replaceChildren(...elements);
-    document.title = `${data.title} | AB Ad World`;
+    const articleTitle = data.seo_title || `${data.title} | AB Ad World`;
+    const articleDescription = data.seo_description || data.excerpt || 'Practical advice on printing, branding and digital growth from AB Ad World.';
+    const articleUrl = new URL(`blog-post.html?slug=${encodeURIComponent(data.slug)}`, window.location.href).href;
+    window.ABSEO?.update({
+      title: articleTitle,
+      description: articleDescription,
+      url: articleUrl,
+      image: data.featured_image_url || undefined,
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: data.title,
+        description: articleDescription,
+        datePublished: data.published_at || undefined,
+        image: data.featured_image_url || undefined,
+        mainEntityOfPage: articleUrl,
+        publisher: { '@type': 'Organization', name: 'AB Ad World', url: 'https://abadworld.cloud/' }
+      }
+    });
   }
 
   function makeProductCard(product) {
@@ -614,17 +654,15 @@
     card.className = 'product-card commerce-product-card';
     card.dataset.category = product.category || 'Advertising';
 
-    const imageUrl = safeImageUrl(product.image_url);
-    if (imageUrl) {
-      const imageLink = document.createElement('a');
-      imageLink.className = 'commerce-product-image';
-      imageLink.href = `product.html?product=${encodeURIComponent(product.id)}`;
-      const image = document.createElement('img');
-      image.src = imageUrl;
-      image.alt = product.name;
-      image.loading = 'lazy';
-      imageLink.append(image);
-      card.append(imageLink);
+    const galleryItems = productGalleryItems(product).map((image) => ({ ...image, url: safeImageUrl(image.url) })).filter((image) => image.url);
+    if (galleryItems.length) {
+      const gallery = document.createElement('div');
+      window.ABImageGallery?.render(gallery, galleryItems, {
+        className: 'product-card-gallery commerce-product-image',
+        href: `product.html?slug=${encodeURIComponent(product.slug)}`,
+        linkLabel: `Open ${product.name}`
+      });
+      card.append(gallery);
     } else {
       const placeholder = document.createElement('div');
       placeholder.className = 'commerce-product-placeholder';
@@ -635,7 +673,7 @@
 
     const title = document.createElement('h3');
     const titleLink = document.createElement('a');
-    titleLink.href = `product.html?product=${encodeURIComponent(product.id)}`;
+    titleLink.href = `product.html?slug=${encodeURIComponent(product.slug)}`;
     titleLink.textContent = product.name;
     title.append(titleLink);
     const description = document.createElement('p');
@@ -733,6 +771,40 @@
     if (!error) favoriteIds = new Set((data || []).map((row) => row.product_id));
   }
 
+  async function attachProductGalleries(products) {
+    const productIds = (products || []).map((product) => product.id).filter(Boolean);
+    let images = [];
+    if (productIds.length) {
+      const { data, error } = await client.from('product_images')
+        .select('product_id,image_url,alt_text,is_primary,sort_order')
+        .in('product_id', productIds)
+        .order('is_primary', { ascending: false })
+        .order('sort_order', { ascending: true });
+      if (!error) images = data || [];
+      else console.warn('Product gallery images are unavailable:', error.message);
+    }
+    const grouped = new Map();
+    images.forEach((image) => {
+      if (!grouped.has(image.product_id)) grouped.set(image.product_id, []);
+      grouped.get(image.product_id).push({ url: image.image_url, alt: image.alt_text || '' });
+    });
+    return (products || []).map((product) => {
+      const gallery = grouped.get(product.id) || [];
+      if (product.image_url && !gallery.some((image) => image.url === product.image_url)) {
+        gallery.unshift({ url: product.image_url, alt: product.name });
+      }
+      return { ...product, gallery_images: gallery };
+    });
+  }
+
+  function productGalleryItems(product) {
+    const images = Array.isArray(product.gallery_images) ? [...product.gallery_images] : [];
+    if (product.image_url && !images.some((image) => image.url === product.image_url)) {
+      images.unshift({ url: product.image_url, alt: product.name });
+    }
+    return images;
+  }
+
   async function loadProducts(root, isHome) {
     const message = document.querySelector(isHome ? '[data-home-product-status]' : '[data-product-status]');
     if (!root) return;
@@ -754,7 +826,7 @@
       return;
     }
 
-    const rows = data || [];
+    const rows = await attachProductGalleries(data || []);
     root.dataset.products = JSON.stringify(rows);
     if (!rows.length) {
       root.replaceChildren();
@@ -826,35 +898,62 @@
       return;
     }
 
-    const productId = new URLSearchParams(window.location.search).get('product');
-    if (!productId) {
+    const parameters = new URLSearchParams(window.location.search);
+    const productSlug = parameters.get('slug');
+    const productId = parameters.get('product');
+    if (!productSlug && !productId) {
       root.replaceChildren();
       status(root, 'Choose a product from the catalog to view its details.', true);
       return;
     }
 
-    const { data, error } = await publishedFilter(client.from('products')
-      .select('id,name,slug,category,short_description,description,base_price,sale_price,image_url,specifications,status,is_published,stock_quantity')
-      .eq('id', productId));
-    const product = data?.[0];
+    let productQuery = publishedFilter(client.from('products')
+      .select('id,name,slug,category,short_description,description,base_price,sale_price,image_url,specifications,status,is_published,stock_quantity,seo_title,seo_description,sku'));
+    productQuery = productSlug ? productQuery.eq('slug', productSlug) : productQuery.eq('id', productId);
+    const { data, error } = await productQuery;
+    const product = (await attachProductGalleries(data || []))[0];
     if (error || !product) {
       root.replaceChildren();
       status(root, error ? 'Could not load this product.' : 'Product not found or no longer available.', true);
       return;
     }
+    const productTitle = product.seo_title || `${product.name} | AB Ad World`;
+    const productDescription = product.seo_description || product.short_description || product.description || `${product.name} from AB Ad World. View product details and request ordering information.`;
+    const productUrl = new URL(`product.html?slug=${encodeURIComponent(product.slug)}`, window.location.href).href;
+    const productImage = productGalleryItems(product)[0]?.url;
+    window.ABSEO?.update({
+      title: productTitle,
+      description: productDescription,
+      url: productUrl,
+      image: productImage,
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        description: productDescription,
+        image: productImage ? [productImage] : undefined,
+        sku: product.sku || undefined,
+        brand: { '@type': 'Brand', name: 'AB Ad World' },
+        offers: Number(productPrice(product)) > 0 ? {
+          '@type': 'Offer',
+          priceCurrency: 'INR',
+          price: String(productPrice(product)),
+          availability: Number(product.stock_quantity) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          url: productUrl
+        } : undefined
+      }
+    });
 
     await loadFavoriteIds();
     const layout = document.createElement('div');
     layout.className = 'detail-layout';
     const showcase = document.createElement('div');
     showcase.className = 'product-showcase';
-    const imageUrl = safeImageUrl(product.image_url);
-    if (imageUrl) {
-      const image = document.createElement('img');
-      image.className = 'product-detail-image';
-      image.src = imageUrl;
-      image.alt = product.name;
-      showcase.append(image);
+    const galleryItems = productGalleryItems(product).map((image) => ({ ...image, url: safeImageUrl(image.url) })).filter((image) => image.url);
+    if (galleryItems.length) {
+      const gallery = document.createElement('div');
+      window.ABImageGallery?.render(gallery, galleryItems, { className: 'product-detail-gallery', thumbnails: true });
+      showcase.append(gallery);
     } else {
       const placeholder = document.createElement('div');
       placeholder.className = 'product-visual';
@@ -1126,7 +1225,7 @@
     if (favoritesResult.error) {
       status(favoritesStatus, `Could not load favorites: ${favoritesResult.error.message}`, true);
     } else {
-      const products = (favoritesResult.data || []).map((item) => item.products).filter(Boolean);
+      const products = await attachProductGalleries((favoritesResult.data || []).map((item) => item.products).filter(Boolean));
       favoriteIds = new Set((favoritesResult.data || []).map((item) => item.product_id));
       favoritesNode.dataset.products = JSON.stringify(products);
       favoritesNode.replaceChildren(...products.map(makeProductCard));
@@ -1312,18 +1411,23 @@
         status(message, `Could not load products: ${error.message}`, true);
         return;
       }
-      list.replaceChildren(...(data || []).map((product) => {
+      const productsWithGalleries = await attachProductGalleries(data || []);
+      list.replaceChildren(...productsWithGalleries.map((product) => {
         const row = document.createElement('div');
         row.className = 'admin-list-item product-admin-item';
         const title = document.createElement('div');
-        const imageUrl = safeImageUrl(product.image_url);
-        if (imageUrl) {
-          const image = document.createElement('img');
-          image.className = 'product-admin-thumbnail';
-          image.src = imageUrl;
-          image.alt = product.name;
-          image.loading = 'lazy';
-          title.append(image);
+        const thumbnails = (product.gallery_images || []).slice(0, 4);
+        if (thumbnails.length) {
+          const galleryPreview = document.createElement('div');
+          galleryPreview.className = 'admin-gallery-preview';
+          thumbnails.forEach((imageItem) => {
+            const image = document.createElement('img');
+            image.src = safeImageUrl(imageItem.url);
+            image.alt = imageItem.alt || product.name;
+            image.loading = 'lazy';
+            galleryPreview.append(image);
+          });
+          title.append(galleryPreview);
         }
         const name = document.createElement('strong');
         name.textContent = product.name;
@@ -1360,6 +1464,8 @@
       fields.namedItem('id').value = product.id;
       fields.namedItem('name').value = product.name;
       fields.namedItem('slug').value = product.slug;
+      fields.namedItem('seo_title').value = product.seo_title || '';
+      fields.namedItem('seo_description').value = product.seo_description || '';
       fields.namedItem('category').value = product.category || 'Offline Printing';
       fields.namedItem('base_price').value = product.base_price ?? '';
       fields.namedItem('sale_price').value = product.sale_price ?? '';
@@ -1372,6 +1478,9 @@
       fields.namedItem('breadth_cm').value = product.breadth_cm ?? '';
       fields.namedItem('height_cm').value = product.height_cm ?? '';
       fields.namedItem('is_published').checked = Boolean(product.is_published || product.status === 'published');
+      form.dataset.currentImageUrl = product.image_url || '';
+      form.dataset.currentImageCount = String(product.gallery_images?.length || 0);
+      fields.namedItem('images').value = '';
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -1394,6 +1503,12 @@
         status(message, 'This product is part of order history and cannot be deleted. Archive it to remove it from the storefront.', true);
         return;
       }
+      const { data: galleryRows, error: galleryLookupError } = await client.from('product_images')
+        .select('image_url').eq('product_id', product.id);
+      if (galleryLookupError) {
+        status(message, `Could not load product gallery before deletion: ${galleryLookupError.message}`, true);
+        return;
+      }
       const { error } = await client.from('products').delete().eq('id', product.id);
       if (error) {
         status(message, `Product could not be deleted: ${error.message}`, true);
@@ -1401,33 +1516,39 @@
       }
       const publicMarker = '/storage/v1/object/public/product-images/';
       const config = window.AB_SUPABASE_CONFIG;
-      if (product.image_url && config?.url) {
-        try {
-          const imageUrl = new URL(product.image_url);
-          const supabaseOrigin = new URL(config.url).origin;
-          const markerIndex = imageUrl.pathname.indexOf(publicMarker);
-          if (imageUrl.origin === supabaseOrigin && markerIndex >= 0) {
-            const path = decodeURIComponent(imageUrl.pathname.slice(markerIndex + publicMarker.length));
-            if (path) {
-              const { error: storageError } = await client.storage.from('product-images').remove([path]);
-              if (storageError) {
-                status(message, `Product deleted, but its image could not be removed from storage: ${storageError.message}`, true);
-                await loadAdminProducts();
-                return;
-              }
+      const imageUrls = [product.image_url, ...(galleryRows || []).map((row) => row.image_url)].filter(Boolean);
+      const storagePaths = new Set();
+      if (config?.url) {
+        for (const value of imageUrls) {
+          try {
+            const imageUrl = new URL(value);
+            const supabaseOrigin = new URL(config.url).origin;
+            const markerIndex = imageUrl.pathname.indexOf(publicMarker);
+            if (imageUrl.origin === supabaseOrigin && markerIndex >= 0) {
+              const path = decodeURIComponent(imageUrl.pathname.slice(markerIndex + publicMarker.length));
+              if (path) storagePaths.add(path);
             }
+          } catch (_error) {
+            // Ignore local or non-storage image URLs during storage cleanup.
           }
-        } catch {
-          status(message, 'Product deleted. Its image could not be identified for storage cleanup.', true);
+        }
+      }
+      if (storagePaths.size) {
+        const { error: storageError } = await client.storage.from('product-images').remove([...storagePaths]);
+        if (storageError) {
+          status(message, `Product deleted, but some gallery images could not be removed from storage: ${storageError.message}`, true);
           await loadAdminProducts();
           return;
         }
       }
-      status(message, 'Product and its uploaded image deleted.');
+      status(message, 'Product and its gallery images deleted.');
       await loadAdminProducts();
     }
 
-    form.addEventListener('reset', () => { window.setTimeout(() => { fields.namedItem('id').value = ''; }, 0); });
+    form.addEventListener('reset', () => {
+      delete form.dataset.currentImageUrl;
+      window.setTimeout(() => { fields.namedItem('id').value = ''; }, 0);
+    });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       if (!isAdmin) return;
@@ -1469,6 +1590,8 @@
         name: fields.namedItem('name').value.trim(),
         slug: fields.namedItem('slug').value.trim(),
         category: fields.namedItem('category').value.trim(),
+        seo_title: fields.namedItem('seo_title').value.trim() || null,
+        seo_description: fields.namedItem('seo_description').value.trim() || null,
         base_price: price,
         sale_price: salePrice,
         short_description: fields.namedItem('short_description').value.trim() || null,
@@ -1486,15 +1609,16 @@
         status(message, 'Name, slug, and category must not be empty.', true);
         return;
       }
-      const file = fields.namedItem('image').files[0];
-      if (file) {
+      const files = Array.from(fields.namedItem('images').files || []);
+      const uploadedImages = [];
+      for (const [index, file] of files.entries()) {
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
-          status(message, 'Choose a PNG, JPG or WebP image up to 5 MB.', true);
+          status(message, 'Choose PNG, JPG or WebP product images up to 5 MB each.', true);
           return;
         }
         const safeName = file.name.toLowerCase().replace(/[^a-z0-9.-]+/g, '-');
         const path = `${id}/${crypto.randomUUID()}-${safeName}`;
-        status(message, 'Uploading product image…');
+        status(message, `Uploading product image ${index + 1} of ${files.length}…`);
         let uploadError;
         try {
           ({ error: uploadError } = await client.storage.from(IMAGE_BUCKET).upload(path, file, { upsert: false, cacheControl: '3600' }));
@@ -1508,8 +1632,14 @@
           status(message, `Image upload failed: ${uploadError.message}. Check that migration 003 created the public product-images bucket and admin upload policy.${networkHint}`, true);
           return;
         }
-        payload.image_url = client.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl;
+        uploadedImages.push({
+          image_url: client.storage.from(IMAGE_BUCKET).getPublicUrl(path).data.publicUrl,
+          alt_text: `${payload.name} image ${index + 1}`,
+          is_primary: !form.dataset.currentImageUrl && index === 0,
+          sort_order: Number(form.dataset.currentImageCount || 0) + index + 1
+        });
       }
+      if (uploadedImages.length && !form.dataset.currentImageUrl) payload.image_url = uploadedImages[0].image_url;
 
       status(message, 'Saving product…');
       const isEditing = Boolean(fields.namedItem('id').value);
@@ -1520,7 +1650,19 @@
         status(message, `Product save failed: ${result.error.message}`, true);
         return;
       }
+      if (uploadedImages.length) {
+        const { error: galleryError } = await client.from('product_images').insert(
+          uploadedImages.map((image) => ({ ...image, product_id: id }))
+        );
+        if (galleryError) {
+          status(message, `Product saved, but its gallery could not be linked: ${galleryError.message}. Confirm migration 003 created the product_images table, then retry adding the images.`, true);
+          await loadAdminProducts();
+          return;
+        }
+      }
       form.reset();
+      delete form.dataset.currentImageUrl;
+      delete form.dataset.currentImageCount;
       status(message, 'Product saved.');
       await loadAdminProducts();
     });
@@ -1912,6 +2054,8 @@
           blogForm.elements.namedItem('title').value = post.title;
           blogForm.elements.namedItem('slug').value = post.slug;
           blogForm.elements.namedItem('excerpt').value = post.excerpt || '';
+          blogForm.elements.namedItem('seo_title').value = post.seo_title || '';
+          blogForm.elements.namedItem('seo_description').value = post.seo_description || '';
           blogForm.elements.namedItem('content').value = post.content || '';
           blogForm.elements.namedItem('status').value = post.status;
           blogForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2026,6 +2170,8 @@
         title,
         slug,
         excerpt: values.namedItem('excerpt').value.trim() || null,
+        seo_title: values.namedItem('seo_title').value.trim() || null,
+        seo_description: values.namedItem('seo_description').value.trim() || null,
         content,
         status: values.namedItem('status').value,
         published_at: values.namedItem('status').value === 'published' ? new Date().toISOString() : null
@@ -2516,6 +2662,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
+    document.querySelectorAll('.hero-visual img, .workstream-photo img').forEach((image) => {
+      image.addEventListener('error', () => image.remove(), { once: true });
+    });
     client = getClient();
     if (client) {
       const { data } = await client.auth.getUser();
