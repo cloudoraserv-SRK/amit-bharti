@@ -1365,7 +1365,9 @@
     const root = document.querySelector('[data-product-catalog-admin]');
     if (!root) return;
     const form = root.querySelector('[data-product-form]');
+    if (!form) return;
     const fields = form.elements;
+    const productImageInput = () => form.querySelector('input[type="file"][name="images"], input[type="file"][name="image"], input[type="file"]');
     const list = root.querySelector('[data-product-admin-list]');
     const workspace = root.querySelector('[data-product-admin-workspace]');
     const message = root.querySelector('[data-product-admin-status]');
@@ -1464,8 +1466,8 @@
       fields.namedItem('id').value = product.id;
       fields.namedItem('name').value = product.name;
       fields.namedItem('slug').value = product.slug;
-      fields.namedItem('seo_title').value = product.seo_title || '';
-      fields.namedItem('seo_description').value = product.seo_description || '';
+      if (fields.namedItem('seo_title')) fields.namedItem('seo_title').value = product.seo_title || '';
+      if (fields.namedItem('seo_description')) fields.namedItem('seo_description').value = product.seo_description || '';
       fields.namedItem('category').value = product.category || 'Offline Printing';
       fields.namedItem('base_price').value = product.base_price ?? '';
       fields.namedItem('sale_price').value = product.sale_price ?? '';
@@ -1480,7 +1482,7 @@
       fields.namedItem('is_published').checked = Boolean(product.is_published || product.status === 'published');
       form.dataset.currentImageUrl = product.image_url || '';
       form.dataset.currentImageCount = String(product.gallery_images?.length || 0);
-      fields.namedItem('images').value = '';
+      if (productImageInput()) productImageInput().value = '';
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -1590,8 +1592,8 @@
         name: fields.namedItem('name').value.trim(),
         slug: fields.namedItem('slug').value.trim(),
         category: fields.namedItem('category').value.trim(),
-        seo_title: fields.namedItem('seo_title').value.trim() || null,
-        seo_description: fields.namedItem('seo_description').value.trim() || null,
+        seo_title: fields.namedItem('seo_title')?.value.trim() || null,
+        seo_description: fields.namedItem('seo_description')?.value.trim() || null,
         base_price: price,
         sale_price: salePrice,
         short_description: fields.namedItem('short_description').value.trim() || null,
@@ -1609,7 +1611,7 @@
         status(message, 'Name, slug, and category must not be empty.', true);
         return;
       }
-      const files = Array.from(fields.namedItem('images').files || []);
+      const files = Array.from(productImageInput()?.files || []);
       const uploadedImages = [];
       for (const [index, file] of files.entries()) {
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
